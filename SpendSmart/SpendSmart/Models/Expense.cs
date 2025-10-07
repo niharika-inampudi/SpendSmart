@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace SpendSmart.Models
 {
     public class Expense
     {
+
         public int Id { get; set; }
         public decimal Value { get; set; }
 
@@ -11,5 +13,6 @@ namespace SpendSmart.Models
         public string? Description { get; set; }
 
         public DateOnly Date { get; set; }
+
     }
 }

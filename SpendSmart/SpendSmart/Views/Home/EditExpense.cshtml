@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
 
 @{
@@ -7,11 +7,10 @@
 }
 
 @model SpendSmart.Models.Expense
-
-
 <div class="text-center">
-    <h1 class="display-4">Add Expense</h1>
+    <h1 class="display-4">Edit Expense</h1>
 </div>
+
 
 
 <form asp-action="CreateEditExpenseFrom" asp-controller="Home">
@@ -27,5 +26,8 @@
     <input class="form-control" type="date" id="expenseDateInput" placeholder="Add a Date" asp-for="Date" max="@today" value="@today" />
 
     <button class="btn btn-primary mt-4" type="Submit">OK</button>
+
+
 </form>
+
 
