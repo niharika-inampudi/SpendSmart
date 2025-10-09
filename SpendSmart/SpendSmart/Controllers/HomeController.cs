@@ -24,7 +24,7 @@ namespace SpendSmart.Controllers
             return View();
         }
 
-        public IActionResult Expenses()
+        public IActionResult Expenses(int? selectedYear, string selectedMonth)
         {
           
             var allExpenses = _context.Expenses.ToList();
@@ -37,8 +37,9 @@ namespace SpendSmart.Controllers
 
             expensesViewModel.selectedMonth = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(DateTime.Now.Month);
             expensesViewModel.selectedYear = DateTime.Now.Year;
-            expensesViewModel.Expenses = allExpenses.Where(e => e.Date.Year == expensesViewModel.selectedYear && e.Date.Month == DateTime.ParseExact(expensesViewModel.selectedMonth, "MMMM", CultureInfo.CurrentCulture).Month)
-            .ToList();
+            expensesViewModel.Expenses = allExpenses.Where(e => e.Date.Year == expensesViewModel.selectedYear && 
+                                                            e.Date.Month == DateTime.ParseExact(expensesViewModel.selectedMonth, "MMMM", CultureInfo.CurrentCulture).Month)
+                                         .ToList();
 
             return View(expensesViewModel);
         }
@@ -55,26 +56,30 @@ namespace SpendSmart.Controllers
             _context.SaveChanges();
             return RedirectToAction("Expenses");
         }
+        
         public IActionResult EditExpense(int? id)
         {
             var expenseInDb = _context.Expenses.SingleOrDefault(expense => expense.Id == id);
             return View(expenseInDb);
         }
+
         public IActionResult CreateEditExpenseFrom(Expense model)
         {
-            if (model.Id==0)
+            if (model.Description!=null&&model.Value!=null)
             {
-                _context.Expenses.Add(model);
+                if (model.Id == 0)
+                {
+                    _context.Expenses.Add(model);
+                }
+                else
+                {
+                    _context.Expenses.Update(model);
+                }
             }
-            else
-            {
-                _context.Expenses.Update(model);
-            }
-                _context.SaveChanges();
+            _context.SaveChanges();
             return RedirectToAction("Expenses");
         }
 
-        
         public IActionResult Privacy()
         {
             return View();
@@ -96,9 +101,10 @@ namespace SpendSmart.Controllers
             return View(expenses);
         }
 
-
         public IActionResult DownloadReport()
         {
+            ExpensesViewModel expensesViewModel = new ExpensesViewModel();
+            var filename = $"{expensesViewModel.selectedMonth.ToString()+ expensesViewModel.selectedYear.ToString()}_Expenses_Report.xlsx";
 
             var expenses = _context.Expenses.ToList();
             using (var workbook = new XLWorkbook())
@@ -128,15 +134,13 @@ namespace SpendSmart.Controllers
                     var content = stream.ToArray();
 
                     // Return the file
-                    return File(
-                        content,
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Expenses_Report.xlsx"
-                    );
+                    return File(content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",filename);
                 }
             }
 
         }
+
         private void CreateExcel()
         {
            

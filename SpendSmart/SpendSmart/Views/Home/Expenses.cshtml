@@ -16,6 +16,12 @@
             <a asp-controller="Home" asp-action="DownloadReport" class="btn btn-secondary">Download Report</a>
         </div>
     </div>
+
+
+
+
+
+
     <br/>
 
     <div class="row">
@@ -26,9 +32,10 @@
             @Html.DropDownListFor(m => m.selectedMonth, (new SelectList(Model.Months)), "--- Select an Option ---", new { @class = "form-control" })
         </div>
         <div class="col-md-2">
-            <a asp-controller="Home" asp-action="Expenses" class="btn btn-secondary">Filter</a>
+            @Html.ActionLink("Filter", "Expenses", "Home", new { selectedYear = Model.selectedYear, selectedMonth = Model.selectedMonth}, null)
         </div>
     </div>
+
     <div style="display: flex; justify-content: flex-end;">
         <a asp-controller="Home" asp-action="CreateEditExpense" class="btn btn-secondary">AddExpense</a>
     </div>
