@@ -1,45 +1,59 @@
-﻿
+﻿@using Newtonsoft.Json
+
 @{
     ViewData["Title"] = "Expenses";
 }
 
 @model SpendSmart.Models.ViewModels.ExpensesViewModel
 
+@{
+    var selectedMonthIndex = Model.SelectedMonth == 0 ? DateTime.Now.Month : Model.SelectedMonth;
+    var selectedYear = Model.SelectedYear == 0 ? DateTime.Now.Year : Model.SelectedYear;
+}
+
+
+
 <div class="text-center">
     <h1 class="display-4">Expenses</h1>
-    <br/>
-    <hr/>
-
-    <div>
-        <h3>Total Expenses  $@ViewBag.Expenses</h3>
-        <div style="display: flex; justify-content: flex-end;">
-            <a asp-controller="Home" asp-action="DownloadReport" class="btn btn-secondary">Download Report</a>
+    <br />
+    <hr />
+    @using (Html.BeginForm("Expenses", "Home", FormMethod.Get))
+    {
+        <div>
+            <h3>Total Expenses  $@ViewBag.Total</h3>
+            <div style="display: flex; justify-content: flex-end;">
+                <a asp-controller="Home"
+                   asp-action="DownloadReport"
+                   asp-route-selectedYear="@Model.SelectedYear"
+                   asp-route-selectedMonth="@Model.SelectedMonth"
+                   class="btn btn-secondary">
+                    Download Report
+                </a>
+            </div>
         </div>
-    </div>
+        <br />
 
-
-
-
-
-
-    <br/>
-
-    <div class="row">
-        <div class="col-md-2">
-            @Html.DropDownListFor(m => m.selectedYear, (new SelectList(Model.Years)), "--- Select an Option ---", new { @class = "form-control" })
+        <div class="row">
+            <div class="col-md-2">
+                @Html.DropDownListFor(m => m.SelectedYear, Model.Years, "--- Select Year ---", new { @class = "form-control" })
+            </div>
+            <div class="col-md-2">
+                @Html.DropDownListFor(m => m.SelectedMonth, Model.Months, "--- Select Month ---", new { @class = "form-control" })
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
         </div>
-        <div class="col-md-2">
-            @Html.DropDownListFor(m => m.selectedMonth, (new SelectList(Model.Months)), "--- Select an Option ---", new { @class = "form-control" })
-        </div>
-        <div class="col-md-2">
-            @Html.ActionLink("Filter", "Expenses", "Home", new { selectedYear = Model.selectedYear, selectedMonth = Model.selectedMonth}, null)
-        </div>
-    </div>
+    }
 
     <div style="display: flex; justify-content: flex-end;">
         <a asp-controller="Home" asp-action="CreateEditExpense" class="btn btn-secondary">AddExpense</a>
     </div>
-    <br/>
+    <br />
+    @if (Model.Expenses == null || Model.Expenses.Count == 0)
+    {
+        <p><b>No Records Found</b></p>
+    }
     <table class="table">
         <thead>
             <tr>
@@ -51,20 +65,21 @@
                 </th>
                 <th>
                     Description
-                </th> 
+                </th>
                 <th>
                     Actions
                 </th>
 
             </tr>
         </thead>
+
         <tbody>
             @{
                 foreach (var expense in Model.Expenses)
                 {
                     <tr>
                         <td>
-                             @expense.Date
+                            @expense.Date
                         </td>
                         <td>
                             @expense.Value
@@ -73,13 +88,18 @@
                             @expense.Description
                         </td>
                         <td>
-                            <a asp-action="EditExpense" asp-route-id="@expense.Id">Edit</a>
-                            <a asp-action="DeleteExpense" asp-route-id="@expense.Id">Delete</a>
+                            <a asp-action="CreateEditExpense" asp-route-id="@expense.Id">Edit</a>
+                            <a asp-action="DeleteExpense"
+                               asp-route-id="@expense.Id"
+                               onclick="return confirm('Are you sure you want to delete this expense?');">
+                                Delete
+                            </a>
                         </td>
                     </tr>
                 }
-            }   
+            }
         </tbody>
+
     </table>
 </div>
 

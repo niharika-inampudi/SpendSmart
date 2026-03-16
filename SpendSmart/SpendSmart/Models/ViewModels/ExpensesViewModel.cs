@@ -1,13 +1,15 @@
-﻿namespace SpendSmart.Models.ViewModels
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace SpendSmart.Models.ViewModels
 {
     public class ExpensesViewModel
     {
-        public string selectedMonth { get; set; }
-        public int selectedYear { get; set; }
+        public int SelectedMonth { get; set; }
+        public int SelectedYear { get; set; }
 
-        public List<string> Months { get; set; }
+        public List<SelectListItem> Months { get; set; }
 
-        public List<int> Years { get; set; }
+        public List<SelectListItem> Years { get; set; }
         public List<Expense> Expenses { get; set; }
     }
 }

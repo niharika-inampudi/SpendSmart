@@ -1,5 +1,16 @@
 ﻿@{
-    ViewData["Title"] = "Create";
+    string title;
+
+    if (Model.Id == 0)
+    {
+        ViewData["Title"] = "Create";
+        title = "Add Expense";
+    }
+    else
+    {
+        ViewData["Title"] = "Edit";
+        title = "Edit Expense";
+    }
 }
 
 @{
@@ -10,22 +21,39 @@
 
 
 <div class="text-center">
-    <h1 class="display-4">Add Expense</h1>
+    <h1 class="display-4">@title</h1>
 </div>
-
 
 <form asp-action="CreateEditExpenseFrom" asp-controller="Home">
     <input hidden class="form-control" type="number" placeholder="0" asp-for="Id" />
 
     <label class="mt-4">Value $</label>
-    <input class="form-control" type="number" placeholder="0" asp-for="Value" step="0.01" min="0.01" max="100000" />
+    <input class="form-control" type="number" placeholder="0" asp-for="Value" step="0.01" min="0.01" max="100000" required/>
 
     <label class="mt-4">Describtion</label>
-    <input class="form-control" type="text" placeholder="Add a description" asp-for="Description" />
+    <input class="form-control" type="text" placeholder="Add a description" asp-for="Description" minlength="5" maxlength="50" required />
 
     <label class="mt-4">Date</label>
-    <input class="form-control" type="date" id="expenseDateInput" placeholder="Add a Date" asp-for="Date" max="@today" value="@today" />
+    <input class="form-control" type="date" id="expenseDateInput" placeholder="Add a Date" asp-for="Date" max="@today"/>
 
     <button class="btn btn-primary mt-4" type="Submit">OK</button>
 </form>
+
+<script>
+    document.getElementById('expenseForm').addEventListener('submit', function (event) {
+        const value = document.getElementById('valueInput').value;
+        const description = document.getElementById('descriptionInput').value.trim();
+
+        if (!value || parseFloat(value) <= 0) {
+            alert("Please enter a valid value greater than 0.");
+            event.preventDefault(); // Prevent form submission
+            return;
+        }
+
+        if (!description) {
+            alert("Please enter a description.");
+            event.preventDefault(); // Prevent form submission
+        }
+    });
+</script>
 
