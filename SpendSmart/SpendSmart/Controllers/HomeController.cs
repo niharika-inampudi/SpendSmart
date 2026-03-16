@@ -41,7 +41,6 @@ namespace SpendSmart.Controllers
         {
             var allExpenses = _context.Expenses.ToList();
             var totalExpenses = allExpenses.Sum(x => x.Value);
-            //ViewBag.Expenses = totalExpenses;
 
             ExpensesViewModel expensesViewModel = new ExpensesViewModel();
             expensesViewModel.Months = Enumerable.Range(1, 12)
